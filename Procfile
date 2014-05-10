@@ -1,0 +1,1 @@
+bridge: npm run start

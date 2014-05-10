@@ -6,15 +6,15 @@
   "license": "Attribution-NonCommercial-ShareAlike 4.0 International",
   "dependencies": {
     "node-osc": "^0.2.1",
+    "coffee-script": "^1.7.1",
     "coffee-resque": "^0.1.11",
     "nano": "^5.8.0",
     "lodash": "^2.4.1"
   },
   "devDependencies": {
-    "coffee-script": "^1.7.1",
     "dotenv": "^0.2.8"
   },
   "scripts": {
-    "start": "./node_modules/coffee-script/bin/coffee index.coffee"
+    "start": "node index.js"
   }
 }

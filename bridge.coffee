@@ -40,7 +40,7 @@ run = ->
       # couch.insert(arg, (a,b,c) -> console.log(a,b,c))
 
       if key isnt 'flash'
-        color = point[0].substr(2)
+        color = point[1].substr(2)
         resque.enqueue "empire", key, [{value:color}], (err, remain) ->
           console.log key + ":" + color
       else
