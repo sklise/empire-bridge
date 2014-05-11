@@ -14,6 +14,7 @@ couch = {}
 nano.auth(process.env.CLOUDANT_KEY, process.env.CLOUDANT_PASSWORD, (err, body, headers) ->
   throw(err) if (err)
 
+  console.log "Connected to Cloudant"
   cookie = _.first(headers['set-cookie'][0].split(";")) if headers and headers['set-cookie']
 
   couch = require('nano')({
@@ -28,8 +29,6 @@ run = ->
     points = _.rest(msg,2)
     _.forEach points, (point) ->
       key = point[0].substr(1)
-
-      # console.log "Connected to Couch"
 
       # data = [{"key":"foo","hey":1},{"key":"bar","hey":2},{"key":"baz","hey":3}]
       # console.log(data)
