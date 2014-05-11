@@ -26,21 +26,30 @@ nano.auth(process.env.CLOUDANT_KEY, process.env.CLOUDANT_PASSWORD, (err, body, h
 
 run = ->
   oscServer.on 'message', (msg, rinfo) ->
+    # Based on how the OSC messages are being sent the first two elements
+    # are inconsequential to this application, get rid of them.
     points = _.rest(msg,2)
+    couch_data = []
+
     _.forEach points, (point) ->
       key = point[0].substr(1)
 
-      # data = [{"key":"foo","hey":1},{"key":"bar","hey":2},{"key":"baz","hey":3}]
-      # console.log(data)
-      # console.log(JSON.stringify(data))
-
-      # couch.bulk(docs:data,{method:"post"},(a,b,c) -> console.log(a,b,c))
-
-      # couch.insert(arg, (a,b,c) -> console.log(a,b,c))
-
-      if key isnt 'flash'
-        color = point[1].substr(2)
-        resque.enqueue "empire", key, [{value:color}], (err, remain) ->
-          console.log key + ":" + color
-      else
+      if key is 'flash'
         console.log "FLASH"
+      else
+        color_hex = point[1].substr(2)
+        couch_data.push {
+          time: (new Date()).getTime()
+          type: key
+          details: {
+            color: color_hex
+          }
+        }
+        resque.enqueue "empire", key, {details:{color:color_hex}}, (err, remain) ->
+          if err then console.log("ERROR: "+err)
+          console.log key + ":" + color_hex
+
+      # Bulk upload to couch to reduce the amount of requests being made both
+      # for this server as well as for couch.
+      couch.bulk {docs: couch_data}, {method:"post"}, (err,b,c) ->
+        console.log(err) if err
