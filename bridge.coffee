@@ -1,12 +1,16 @@
 osc = require 'node-osc'
 _ = require 'lodash'
+url = require 'url'
 require('dotenv').load()
 
+redisUrl = url.parse(process.env.REDISCLOUD_URL)
 oscServer = new osc.Server(1337, '0.0.0.0')
 nano = require('nano')(process.env.CLOUDANT_URL)
 resque = require('coffee-resque').connect
-  host: "localhost"
-  port: 6379
+  host: redisUrl.hostname
+  port: redisUrl.port
+  password: redisUrl.auth.split(":")[1]
+  timeout: 1000
 
 cookie = ''
 couch = {}
