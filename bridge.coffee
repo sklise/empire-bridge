@@ -49,7 +49,7 @@ run = ->
             color: color_hex
           }
         }
-        resque.enqueue "empire", key, {details:{color:color_hex}}, (err, remain) ->
+        resque.enqueue "empire", key, [{details:{color:color_hex}}], (err, remain) ->
           if err then console.log("ERROR: "+err)
           console.log key + ":" + color_hex
 
