@@ -41,17 +41,18 @@ run = ->
       if key is 'flash'
         console.log "FLASH"
       else
-        color_hex = point[1].substr(2)
+        colors = _.map point[1].split(","), (d) ->
+          d.substr(2)
         couch_data.push {
           time: (new Date()).getTime()
           type: key
           details: {
-            color: color_hex
+            color: colors
           }
         }
-        resque.enqueue "empire", key, [{details:{color:color_hex}}], (err, remain) ->
+        resque.enqueue "empire", key, [{details:{color:colors}}], (err, remain) ->
           if err then console.log("ERROR: "+err)
-          console.log key + ":" + color_hex
+          console.log key + ":" + colors
 
       # Bulk upload to couch to reduce the amount of requests being made both
       # for this server as well as for couch.
