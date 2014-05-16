@@ -38,8 +38,14 @@ run = ->
     _.forEach points, (point) ->
       key = point[0].substr(1)
 
-      if key is 'flash'
-        console.log "FLASH"
+      if key is 'flashes'
+        parsed = JSON.parse(point[1])
+        resque.enqueue "empire", key, [{details:parsed}]
+        couch_data.push {
+          time: (new Date()).getTime()
+          type: key
+          details: parsed
+        }
       else
         colors = _.map point[1].split(","), (d) ->
           d.substr(2)
