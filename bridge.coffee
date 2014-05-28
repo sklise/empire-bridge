@@ -56,9 +56,6 @@ run = ->
             color: colors
           }
         }
-        resque.enqueue "empire", key, [{details:{color:colors}}], (err, remain) ->
-          if err then console.log("ERROR: "+err)
-          console.log key + ":" + colors
 
       # Bulk upload to couch to reduce the amount of requests being made both
       # for this server as well as for couch.
