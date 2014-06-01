@@ -1,7 +1,7 @@
 osc = require 'node-osc'
 _ = require 'lodash'
 url = require 'url'
-require('dotenv').load()
+env = require('node-env-file')("#{__dirname}/.env");
 
 redisUrl = url.parse(process.env.REDISCLOUD_URL)
 oscServer = new osc.Server(1337, '0.0.0.0')

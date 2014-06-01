@@ -9,8 +9,7 @@
     "coffee-script": "^1.7.1",
     "coffee-resque": "^0.1.11",
     "nano": "^5.8.0",
-    "lodash": "^2.4.1",
-    "dotenv": "^0.2.8"
+    "lodash": "^2.4.1"
   },
   "devDependencies": {
     "dotenv": "^0.2.8"
