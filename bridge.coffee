@@ -15,18 +15,19 @@ resque = require('coffee-resque').connect
 cookie = ''
 couch = {}
 
-nano.auth(process.env.CLOUDANT_KEY, process.env.CLOUDANT_PASSWORD, (err, body, headers) ->
-  throw(err) if (err)
+connectToCloudant = ->
+  nano.auth(process.env.CLOUDANT_KEY, process.env.CLOUDANT_PASSWORD, (err, body, headers) ->
+    throw(err) if (err)
 
-  console.log "Connected to Cloudant"
-  cookie = _.first(headers['set-cookie'][0].split(";")) if headers and headers['set-cookie']
+    console.log "Connected to Cloudant"
+    cookie = _.first(headers['set-cookie'][0].split(";")) if headers and headers['set-cookie']
 
-  couch = require('nano')({
-    url: process.env.CLOUDANT_URL+"/" + process.env.CLOUDANT_DB
-    cookie: cookie
-  })
-  run()
-)
+    couch = require('nano')({
+      url: process.env.CLOUDANT_URL+"/" + process.env.CLOUDANT_DB
+      cookie: cookie
+    })
+    run()
+  )
 
 run = ->
   oscServer.on 'message', (msg, rinfo) ->
@@ -40,7 +41,9 @@ run = ->
 
       if key is 'flashes'
         parsed = JSON.parse(point[1])
+
         resque.enqueue "empire", key, [{details:parsed}]
+
         couch_data.push {
           time: (new Date()).getTime()
           type: key
@@ -60,4 +63,5 @@ run = ->
       # Bulk upload to couch to reduce the amount of requests being made both
       # for this server as well as for couch.
       couch.bulk {docs: couch_data}, {method:"post"}, (err,b,c) ->
-        console.log(err) if err
+        if err
+          connectToCloudant()
